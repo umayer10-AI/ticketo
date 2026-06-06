@@ -3,7 +3,7 @@ import React from 'react';
 
 const page = () => {
 
-    const role = 'attendee'
+    const role = 'organizer'
     let overview;
 
     if(role==='organizer'){
@@ -18,7 +18,7 @@ const page = () => {
     }
 
     return (
-        <div className='max-w-[90%] ml-10'>
+        <div className='max-w-[90%] ml-10 mt-10'>
             {overview}
         </div>
     );
