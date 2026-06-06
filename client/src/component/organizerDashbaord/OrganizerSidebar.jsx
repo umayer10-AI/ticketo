@@ -41,7 +41,7 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+export default function OrganizerSidebar() {
   const pathname = usePathname();
 
   return (

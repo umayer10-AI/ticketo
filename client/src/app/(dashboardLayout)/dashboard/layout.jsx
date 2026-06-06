@@ -1,10 +1,21 @@
-import Sidebar from '@/component/organizerDashbaord/SideBar';
+import AttendeeSidebar from '@/component/attendeeDashboard/AttendeeSideBar';
+import OrganizerSidebar from '@/component/organizerDashbaord/OrganizerSidebar';
 import React from 'react';
+
+const role = 'attendee'
+let sideBar;
+if(role==='organizer'){
+    sideBar = <OrganizerSidebar></OrganizerSidebar>
+}
+if(role==='attendee'){
+    sideBar = <AttendeeSidebar></AttendeeSidebar>
+}
 
 const layout = ({children}) => {
     return (
         <div className='flex'>
-            <Sidebar/>
+            {sideBar}
+            
             <div className='w-full'>
                 {children}
             </div>
