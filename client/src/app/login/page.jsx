@@ -1,10 +1,10 @@
 "use client";
-
 import React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { Ticket } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
 
 const LoginPage = () => {
   const {
@@ -13,9 +13,28 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (v) => {
+  const onSubmit = async (v) => {
     console.log(v);
+
+    const { data, error } = await authClient.signIn.email({
+            email: v.email,
+            password: v.password,
+            callbackURL: "/",
+        });
+    
+        if(data){
+            alert('Data Successfully')
+        }
+        if(error){
+            alert(error.message)
+        }
   };
+
+  const handleGoogle = async () => {
+    const data = await authClient.signIn.social({
+        provider: "google",
+    });
+  }
 
   return (
     <div className="bg-black flex items-center justify-center px-6 my-10">
@@ -36,6 +55,7 @@ const LoginPage = () => {
         {/* Google Login Button */}
         <button
           type="button"
+          onClick={handleGoogle}
           className="w-full flex items-center justify-center gap-3 bg-white text-black py-3 rounded-xl font-medium hover:scale-105 transition mb-5"
         >
           <FcGoogle size={22} />

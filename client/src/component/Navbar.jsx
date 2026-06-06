@@ -4,10 +4,18 @@ import React, { useState } from "react";
 import { ChevronDown, Ticket } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = authClient.useSession()
+  const user = session?.user
+  console.log(user)
+
+  const a = async() => {
+    await authClient.signOut()
+  }
 
   return (
     <nav className="bg-black border-b border-zinc-800 sticky top-0 z-50">
@@ -54,21 +62,24 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             
             {/* Login Button */}
-            <button className="bg-linear-to-r from-cyan-500 to-blue-700 text-white px-5 py-2 rounded-lg font-medium hover:scale-105 transition-transform">
+            {
+                !user && <Link href={'/login'} className="bg-linear-to-r from-cyan-500 to-blue-700 text-white px-5 py-2 rounded-lg font-medium hover:scale-105 transition-transform">
               Login
-            </button>
+            </Link>
+            }
 
             {/* Profile Dropdown */}
             <div className="relative">
               <div
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1 cursor-pointer hover:border-cyan-500/50 transition"
+                className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 cursor-pointer hover:border-cyan-500/50 transition"
               >
                 <img
-                  src="https://i.pravatar.cc/150?img=12"
+                  src={user?.image || "https://i.pravatar.cc/150?img=12"}
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover"
                 />
+                {user && <h2>hey , {user?.name?.split(' ')[0] || 'Jhon Doe'}</h2>}
 
                 <ChevronDown
                   size={18}
@@ -87,7 +98,7 @@ const Navbar = () => {
                     Dashboard
                   </Link>
 
-                  <button className="w-full text-left px-5 py-3 text-red-400 hover:bg-zinc-800 transition">
+                  <button onClick={a} className="w-full text-left px-5 py-3 text-red-400 hover:bg-zinc-800 transition">
                     Logout
                   </button>
                 </div>
