@@ -17,7 +17,8 @@ export const auth = betterAuth({
         // role:{
         //     default: 'attendee'
         // }
-          role: 'attendee'
+          role: 'attendee',
+          isblock: false
         }
     },
     socialProviders: {

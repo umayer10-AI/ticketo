@@ -1,11 +1,26 @@
 "use client";
-
 import React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { Ticket } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
 import { authClient } from "@/lib/auth-client";
+
+
+const uploadToImgBB = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch(
+    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB}`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await res.json();
+  return data?.data?.url;
+};
 
 const RegisterPage = () => {
   const {
@@ -15,22 +30,32 @@ const RegisterPage = () => {
   } = useForm();
 
   const onSubmit = async (v) => {
-    console.log(v);
+    try {
+      console.log(v);
 
-    const { data, error } = await authClient.signUp.email({
+      const file = v.image?.[0];
+
+      let imageUrl = "";
+
+      if (file) {
+        imageUrl = await uploadToImgBB(file);
+      }
+
+      const { data, error } = await authClient.signUp.email({
         name: v.name,
         email: v.email,
         password: v.password,
-        image: v.image,
+        image: imageUrl,
         role: v.role,
+        isblock: false,
         callbackURL: "/",
-    });
+      });
 
-    if(data){
-        alert('Data Successfully')
-    }
-    if(error){
-        alert(error.message)
+      if (data) alert("Data Successfully");
+      if (error) alert(error.message);
+    } catch (err) {
+      console.log(err);
+      alert("Something went wrong");
     }
   };
 
@@ -39,22 +64,21 @@ const RegisterPage = () => {
       
       <div className="max-w-md w-full bg-zinc-900 rounded-2xl py-5 px-8 shadow-xl shadow-cyan-400">
         
-        {/* Logo */}
+        {/* ================= LOGO ================= */}
         <div className="flex flex-col items-center mb-5">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-700 flex items-center justify-center shadow-lg p-2 shadow-cyan-500/20">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-700 flex items-center justify-center shadow-lg shadow-cyan-500/20">
             <Ticket className="text-white" />
           </div>
 
-          <h1 className="mt-1 text-3xl font-bold bg-gradient-to-r from-cyan-500 to-blue-700 bg-clip-text text-transparent">
+          <h1 className="mt-2 text-3xl font-bold bg-gradient-to-r from-cyan-500 to-blue-700 bg-clip-text text-transparent">
             Create account
           </h1>
         </div>
 
-
-        {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+        {/* ================= FORM ================= */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           
-          {/* Name */}
+          {/* NAME */}
           <div>
             <label className="text-gray-300 text-sm font-semibold">
               Full Name
@@ -68,13 +92,11 @@ const RegisterPage = () => {
             />
 
             {errors.name && (
-              <p className="text-red-500 text-xs mt-1">
-                Name is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">Name is required</p>
             )}
           </div>
 
-          {/* Email */}
+          {/* EMAIL */}
           <div>
             <label className="text-gray-300 text-sm font-semibold">
               Email
@@ -88,33 +110,29 @@ const RegisterPage = () => {
             />
 
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
-                Email is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">Email is required</p>
             )}
           </div>
 
-          {/* Image URL */}
+          {/* IMAGE UPLOAD */}
           <div>
             <label className="text-gray-300 text-sm font-semibold">
-              Profile Image URL
+              Profile Image
             </label>
 
             <input
-              type="text"
-              placeholder="Paste image URL"
+              type="file"
+              accept="image/*"
               {...register("image", { required: true })}
-              className="w-full mt-2 px-4 py-3 rounded-xl bg-black border border-zinc-800 text-white focus:outline-none focus:border-cyan-500"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-black border border-zinc-800 text-white"
             />
 
             {errors.image && (
-              <p className="text-red-500 text-xs mt-1">
-                Image URL is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">Image is required</p>
             )}
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
             <label className="text-gray-300 text-sm font-semibold">
               Password
@@ -124,16 +142,15 @@ const RegisterPage = () => {
               type="password"
               placeholder="Create password"
               {...register("password", { required: true })}
-              className="w-full mt-2 px-4 py-3 rounded-xl bg-black border border-zinc-800 text-white focus:outline-none focus:border-cyan-500"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-black border border-zinc-800 text-white"
             />
 
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
-                Password is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">Password is required</p>
             )}
           </div>
 
+          {/* ROLE */}
           <div>
             <label className="text-gray-300 text-sm font-semibold">
               Select Role
@@ -149,13 +166,11 @@ const RegisterPage = () => {
             </select>
 
             {errors.role && (
-              <p className="text-red-500 text-xs mt-1">
-                Role is required
-              </p>
+              <p className="text-red-500 text-xs mt-1">Role is required</p>
             )}
           </div>
 
-          {/* Button */}
+          {/* SUBMIT BUTTON */}
           <button
             type="submit"
             className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-700 hover:scale-105 transition"
@@ -164,7 +179,7 @@ const RegisterPage = () => {
           </button>
         </form>
 
-        {/* Login Link */}
+        {/* LOGIN LINK */}
         <p className="text-center text-gray-400 text-sm mt-6">
           Already have an account?{" "}
           <Link
