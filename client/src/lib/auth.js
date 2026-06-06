@@ -12,6 +12,14 @@ export const auth = betterAuth({
     emailAndPassword: { 
         enabled: true, 
     },
+    user: {
+       additionalFields: {
+        // role:{
+        //     default: 'attendee'
+        // }
+          role: 'attendee'
+        }
+    },
     socialProviders: {
         google: { 
             clientId: process.env.GOOGLE_CLIENT_ID, 

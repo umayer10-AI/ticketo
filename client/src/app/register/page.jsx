@@ -22,6 +22,7 @@ const RegisterPage = () => {
         email: v.email,
         password: v.password,
         image: v.image,
+        role: v.role,
         callbackURL: "/",
     });
 
@@ -49,21 +50,6 @@ const RegisterPage = () => {
           </h1>
         </div>
 
-        {/* Google Register */}
-        <button
-          type="button"
-          className="w-full flex items-center justify-center gap-3 bg-white text-black py-3 rounded-xl font-medium hover:scale-105 transition mb-5"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 mb-3">
-          <div className="h-px flex-1 bg-zinc-700"></div>
-          <span className="text-gray-500 text-sm">OR</span>
-          <div className="h-px flex-1 bg-zinc-700"></div>
-        </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -144,6 +130,27 @@ const RegisterPage = () => {
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
                 Password is required
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="text-gray-300 text-sm font-semibold">
+              Select Role
+            </label>
+
+            <select
+              {...register("role", { required: true })}
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-black border border-zinc-800 text-white"
+            >
+              <option value="">Select role</option>
+              <option value="attendee">Attendee</option>
+              <option value="organizer">Organizer</option>
+            </select>
+
+            {errors.role && (
+              <p className="text-red-500 text-xs mt-1">
+                Role is required
               </p>
             )}
           </div>
