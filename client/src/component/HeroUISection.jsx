@@ -6,7 +6,7 @@ import { Calendar, MapPin, Ticket, TrendingUp } from "lucide-react";
 
 const HeroUISection = () => {
   return (
-    <section className="bg-black px-6 py-16">
+    <section className="bg-black px-6 py-30">
       <div className="max-w-6xl mx-auto">
         
         {/* Header */}

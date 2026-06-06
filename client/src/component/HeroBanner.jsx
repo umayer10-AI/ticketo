@@ -2,7 +2,7 @@ import React from "react";
 
 const HeroBanner = () => {
   return (
-    <section className="bg-black text-white px-6 py-20">
+    <section className="bg-black text-white px-6 py-40">
       <div className="max-w-6xl mx-auto text-center relative">
         
         {/* Glow */}
