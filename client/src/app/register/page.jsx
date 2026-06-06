@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { Ticket } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
 
 const RegisterPage = () => {
   const {
@@ -13,8 +14,23 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (v) => {
+  const onSubmit = async (v) => {
     console.log(v);
+
+    const { data, error } = await authClient.signUp.email({
+        name: v.name,
+        email: v.email,
+        password: v.password,
+        image: v.image,
+        callbackURL: "/",
+    });
+
+    if(data){
+        alert('Data Successfully')
+    }
+    if(error){
+        alert(error.message)
+    }
   };
 
   return (
